@@ -5,7 +5,7 @@ TOTAL_DISK=$(df -h --total | grep total | awk '{print $2}')
 USED_DISK=$(df -h --total | grep total | awk '{print $3}')
 DISK_PER100=$(df -h --total | grep total | awk '{print $5}')
 IPS=$(hostname -I | awk '{print $1}')
-MAC=$(ip link show | grep link/ether | awl '{print $2}')
+MAC=$(ip link show | grep link/ether | awk '{print $2}')
 
 wall "
 		********************************************************
@@ -16,9 +16,9 @@ wall "
 		Disk Usage: $USED_DISK/$TOTAL_DISK ($DISK_PER100)
 		CPU load: $(top -bn1 | grep '^%Cpu' | xargs | awk '{printf("%.1f%%"), $2 + $4}')
 		Last boot: $(who -b | awk '{print($3 " " $4)}')
-		LVM use: $(if [ $(lsbls | grep lvm | wc -l) -eq 0]; then echo no; else echo yes; fi)
+		LVM use: $(if [ $(lsblk | grep lvm | wc -l) -eq 0 ]; then echo no; else echo yes; fi)
 		Connexions TCP: $(grep TCP /proc/net/sockstat | awk '{print $3}') ESTABLISHED
-		User log: $(wjo | wc -l)
+		User log: $(who | wc -l)
 		Network: $IPS ($MAC)
 		Sudo: $(grep COMMAND /var/log/sudo/sudo.log | wc -l) cmd
 		********************************************************"
